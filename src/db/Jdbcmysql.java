@@ -13,11 +13,6 @@ public class Jdbcmysql {
 	private ResultSet rs = null;  			// 結果集
 	private PreparedStatement pst = null; 	// 執行,傳入之sql為預儲之字申,需要傳入變數之位置 
 	
-	// 先利用?來做標示
-	private String dropdbSQL = "DROP TABLE IF EXISTS user";
-	private String createdbSQL = "CREATE TABLE User (" + "id INTEGER" + ", name VARCHAR(20)" + ", passwd VARCHAR(20))";
-	private String insertdbSQL = "INSERT INTO User(id, name, passwd) " + "SELECT IFNULL(max(id),0)+1, ?, ? FROM User";
-	private String selectSQL = "SELECT * FROM User ";
 	private String userName = "wilsonUOB";
 	private String passWord = "wilson12345";
 
@@ -49,6 +44,8 @@ public class Jdbcmysql {
 	// 建立table的方式
 	// 可以看看Statement的使用方式
 	public void createTable() {
+		String createdbSQL = "CREATE TABLE User (" + "id INTEGER" + ", name VARCHAR(20)" + ", passwd VARCHAR(20))";
+
 		try {
 			stat = con.createStatement();
 			stat.executeUpdate(createdbSQL);
@@ -62,6 +59,9 @@ public class Jdbcmysql {
 	// 新增資料
 	// 可以看看PrepareStatement的使用方式
 	public void insertTable(String name, String passwd) {
+		// 先利用?來做標示
+		String insertdbSQL = "INSERT INTO User(id, name, passwd) " + "SELECT IFNULL(max(id),0)+1, ?, ? FROM User";
+
 		try {
 			pst = con.prepareStatement(insertdbSQL);
 			pst.setString(1, name);
@@ -77,6 +77,8 @@ public class Jdbcmysql {
 	// 刪除Table,
 	// 跟建立table很像
 	public void dropTable() {
+		String dropdbSQL = "DROP TABLE IF EXISTS user";
+
 		try {
 			stat = con.createStatement();
 			stat.executeUpdate(dropdbSQL);
@@ -86,10 +88,25 @@ public class Jdbcmysql {
 			Close();
 		}
 	}
+	
+	public void updateTable() {
+		String updatedbSQL = "UPDATE User SET name = 'wilson' WHERE id = 1";
+		
+		try {
+			stat = con.createStatement();
+			stat.executeUpdate(updatedbSQL);
+		} catch (Exception e) {
+			System.out.println("DropDB Exception :" + e.toString());
+		} finally {
+			Close();
+		}
+	}
 
 	// 查詢資料
 	// 可以看看回傳結果集及取得資料方式
 	public void SelectTable() {
+		String selectSQL = "SELECT * FROM User ";
+
 		try {
 			stat = con.createStatement();
 			rs = stat.executeQuery(selectSQL);
@@ -133,6 +150,8 @@ public class Jdbcmysql {
 		test.insertTable("yku", "12356");
 		test.insertTable("yku2", "7890");
 		test.SelectTable();
-
+		System.out.print("\n");
+		test.updateTable();
+		test.SelectTable();
 	}
 }

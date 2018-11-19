@@ -8,17 +8,17 @@ import java.sql.Statement;
 
 public class BatchTest {
 	
-	private static Connection con = null;
-	private static Statement stat = null;
-	private static ResultSet rs = null;
+	private Connection con = null;
+	private Statement stat = null;
+	private ResultSet rs = null;
 	
-	private static String driver = "com.mysql.cj.jdbc.Driver";
-	private static String userName = "wilsonUOB";
-	private static String passWord = "wilson12345";
-	private static String db = "cybersoft";
-	private static String url = "jdbc:mysql://localhost/" + db + "?useUnicode=true&characterEncoding=Big5&serverTimezone=CTT";
+	private final String driver = "com.mysql.cj.jdbc.Driver";
+	private final String userName = "wilsonUOB";
+	private final String passWord = "wilson12345";
+	private final String db = "cybersoft";
+	private final String url = "jdbc:mysql://localhost/" + db + "?useUnicode=true&characterEncoding=Big5&serverTimezone=CTT";
 	
-	public static void main(String[] args) throws SQLException {
+	public BatchTest() {
 		try {
 			Class.forName(driver);
 			con = DriverManager.getConnection(url, userName, passWord);
@@ -44,9 +44,21 @@ public class BatchTest {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
+			Close();
+		}
+	}
+	
+	private void Close() {
+		try {
 			if (rs != null) rs.close();
 			if (stat != null) stat.close();
 			if (con != null) con.close();
+		} catch (SQLException e) {
+			System.out.println("Close Exception :" + e.toString());
 		}
+	}
+	
+	public static void main(String[] args) throws SQLException {
+		BatchTest bt = new BatchTest();
 	}
 }
